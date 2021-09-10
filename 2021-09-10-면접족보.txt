@@ -1,0 +1,81 @@
+1.인스턴스 변수란?
+2. 지역 변수란?
+
+3. 클래스의 구성 요소는?
+4.원의 넓이는 구하는 프로그램**을 아래와 같이 작성하시오.
+
+- 원 클래스를 만들 것
+- 메인 메소드를 가진 다른 클래스에서 원 객체를 생성할 것
+
+5.사각형의 넓이를 구하는 프로그램
+
+- 사각형 클래스를 만들 것
+- 메인 메소드를 가진 다른 클래스에서 원 객체를 생성할 것
+
+6.성적표 구하는 프로그램을 만드시오.
+- Grade 클래스 
+- 국영수 인스턴스 변수(각각의 setter getter 함수)
+-getToal ,getAvg()
+- 메인 메소드를 가진 다른 클래스에서 Grade 객체 
+객체를 생성한다는 것은 해당 클래스의 .class 파일을 메모리에 올린다는 것을 의미한다.
+
+7. 객체란 무엇인가?
+8. 아래의 클래스에 대하여, 메모리 그림을 그리시오.
+Rectangle r = new Rectangle(); 
+public class Rectangle {
+int height;
+int width;
+
+public int getHeight() {
+	return height;
+}
+
+public void setHeight(int height) {
+	this.height = height;
+}
+
+public int getWidth() {
+	return width;
+}
+
+public void setWidth(int width) {
+	this.width = width;
+}
+
+public int getArea() {
+	return width * height;
+}
+9. 클래스와 객체의 차이는?
+
+10. 아래의 프로그램을 작성하시오.
+
+- 1 부터 num 까지 합을 구하는 class 를 작성하도록 하시오.
+
+1) 합을 구할 수 있는 GetSum클래스를 통해 getsum 객체를 생성
+2) num 까지의 합을 구해야 하므로 num값이 변할 수 있도록 num 변수를 선언
+예를 들어서 50까지의 합을 구하기 위해 num변수에  50을 대입
+3) getsum객체의 setNum함수를 이용해  num(여기서는 50)값 저장
+4) getsum객체의 sum함수를 이용해 1부터 50(num)까지의 값을 구함
+
+11. 아래의 클래스를 작성하시오.
+
+StarPrint strPrint = new StarPrint();
+
+strPrint.printTriangle(3); 
+System.out.println();
+strPrint.printReverseTriangle(3); 
+
+*
+**
+***
+
+***
+**
+*
+
+12. 아래의 프로그래밍을 작성하시오.
+
+Gugudan gugudan = new Gugudan();
+gugudan.printGugu(10);  //1단부터 10단까지 출력
+gugudan.printGugu(20);  //1단부터 20단까지 출력
+```
