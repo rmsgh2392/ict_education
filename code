@@ -1,0 +1,470 @@
+		//
+    while (true) {
+			System.out.println("국어 영어 수학을 입력하세요!");
+			kor = sc.nextInt();
+			math = sc.nextInt();
+			eng = sc.nextInt();
+
+			System.out.println("평균은 : " + (kor + math + eng) / 3.0);
+
+			System.out.println("계속 하시겠습니까?");
+			ch = sc.next().charAt(0);
+
+			if (ch == 'y')
+				continue;
+			else if (ch == 'n')
+				break;
+			else
+				System.out.println("y 혹은 n만 입력해주세요");
+
+		}
+    
+    
+//승환    
+    import java.util.Scanner;
+
+public class GradeScanner {
+
+	public static void main(String[] args) {
+
+		int kor;
+		int eng;
+		int math;
+		int total;
+		double avg;
+		String str;
+		Scanner sc = new Scanner(System.in);
+
+		for (int i = 0; i < 10; i++) {
+			System.out.println("국어 영어 수학을 입력하세요!");
+			kor = sc.nextInt();
+			eng = sc.nextInt();
+			math = sc.nextInt();
+			total = kor + eng + math;
+			avg = total / 3.0;
+			System.out.println("평균은 " + avg);
+			System.out.println("계속하시겠습니까");
+			str = sc.next();
+			if(str.equals("y")) {
+				continue;
+			}else if(str.equals("n")) {
+				System.out.println("프로그램 종료 입니다.");
+				break;
+			}
+		}
+
+	}
+
+}
+
+//명진
+
+import java.util.Scanner;
+
+public class ScannerTest03 {
+	public static void main(String[] args) {
+
+		Scanner sc = new Scanner(System.in);
+		for (int i = 0; ; i++) {
+
+			System.out.print("국어 : ");
+			int kor = sc.nextInt();
+			System.out.print("영어 : ");
+			int eng = sc.nextInt();
+			System.out.print("수학 : ");
+			int math = sc.nextInt();
+			int total = kor + eng + math;
+			double avg = (double) total / 3;
+			System.out.println("평군은 " + avg);
+			System.out.println("계속 하시겠습니까");
+			
+			String yesOrNo = sc.next();
+			
+				
+			if(yesOrNo.equals ("y") || yesOrNo.equals("Y")){
+				continue;
+			}else
+				System.out.println("프로그램 종료 입니다.");
+			break;
+
+		}
+
+	}
+}
+//한빈
+public static void main(String[] args) {
+		
+		Scanner sc = new Scanner(System.in);
+
+		for(int i = 1; true; i++) {
+				System.out.println("국어, 수학, 영어를 입력하세요!");
+				int num1 = sc.nextInt();
+				int num2 = sc.nextInt();
+				int num3 = sc.nextInt();
+				
+				double avg = (num1+num2+num3)/3.0;
+				System.out.println("평균은 " + avg);
+				
+				System.out.println("계속 하시겠습니까");
+				String answer = sc.next();
+				System.out.println(answer);
+				
+				if(answer.equals("y") || answer.equals("Y")) {
+					continue;
+				}
+				if(answer.equals("n") || answer.equals("N")) {
+					System.out.println("프로그램 종료입니다.");
+					break;
+				}
+				
+			
+			}
+	}
+  
+  
+  //혁진
+  import java.util.Scanner;
+public class hs {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+		Scanner sc = new Scanner(System.in);
+		int kor;
+		int eng;
+		int math;
+		int total;
+		double avg;
+		String str;
+
+		for (int i = 1; i < 10; i++) {
+			System.out.println("국어 성적을 입력하세요");
+			kor = sc.nextInt();
+			System.out.println("영어 성적을 입력하세요");
+			eng = sc.nextInt();
+			System.out.println("수학 성적을 입력하세요");
+			math = sc.nextInt();
+
+			total = kor + eng + math;
+			avg = total/3.0;
+			System.out.println("평균은 "+ avg+ "입니다");
+
+			System.out.println("계속 하시겠습니까?");
+			str=sc.next();
+			if(str.equals("y")) {
+				continue;
+			}else if(str.equals("n")) {
+				System.out.println("프로그램을 종료합니다.");
+			}break;
+
+		}
+
+	}
+
+}
+
+//예린
+
+import java.util.Scanner;
+
+public class Test {
+	public static void main(String[] args) {
+	Scanner sc = new Scanner(System.in);
+	String a ="y";
+	while(a.equals("y")) {
+		System.out.print("국어 영어 수학을 입력하세여");
+		int kor = sc.nextInt();
+		int eng = sc.nextInt();
+		int math = sc.nextInt();
+		Grade grade = new Grade(kor, eng, math);
+		System.out.println("평균은 "+grade.avg());
+        
+        System.out.print("계속 하시겠습니까? y또는 n입력");
+        a = sc.next();             
+        
+        if(a.equals("n"))   
+      {  System.out.println("프로그램 종료입니다.");
+        break; 
+       }
+	}
+}
+}
+
+//남현
+
+do {
+			System.out.println("국어 영어 수학을 입력하세요!");
+			Scanner sc = new Scanner(System.in);
+			int kor = sc.nextInt();
+			int eng = sc.nextInt();
+			int math = sc.nextInt();
+			int all = kor + eng + math;
+			double avg = all / 3.0;
+			System.out.println("평균은 " + avg);
+			System.out.println("계속 하시겠습니까?");
+			Scanner sc0 = new Scanner(System.in);
+			String yn = sc0.next();
+			if (yn.equals("n")) {
+				System.out.println("프로그램 종료입니다.");
+				break;
+			}
+		} while (true);
+    
+    
+    
+    //상훈
+    
+    import java.util.Scanner;
+
+public class Test {
+
+	public static void main(String[] args) {
+
+		int kor;
+		int eng;
+		int math;
+		int total;
+		double avg;
+		String str;
+		Scanner sc = new Scanner(System.in);
+
+		for (int i = 0; i < 10; i++) {
+			System.out.println("국어 영어 수학을 입력하세요!");
+			kor = sc.nextInt();
+			eng = sc.nextInt();
+			math = sc.nextInt();
+			total = kor + eng + math;
+			avg = total / 3.0;
+			System.out.println("평균은 " + avg);
+			System.out.println("계속하시겠습니까");
+			str = sc.next();
+			if(str.equals("y")) {
+				continue;
+			}else if(str.equals("n")) {
+				System.out.println("프로그램 종료 입니다.");
+				break;
+			}
+		}
+
+	}
+
+}
+
+///화페메수/////////
+
+//민규
+class CountBill {
+	public void printBill(int money) {
+		System.out.println("오만원 : " + money / 50000 + "장");
+		System.out.println("만원 : " + (money % 50000) / 10000 + "장");
+		System.out.println("오천원 : " + (money % 10000) / 5000 + "장");
+		System.out.println("천원 : " + (money % 5000) / 1000 + "장");
+		System.out.println("오백원 : " + (money % 1000) / 500 + "개");
+		System.out.println("백원 : " + (money % 500) / 100 + "개");
+	}
+}
+//남현
+
+class Money0914 {
+	private int money;
+	private int fivem;
+	private int m;
+	private int fivec;
+	private int c;
+	private int fiveb;
+	private int b;
+	private int minus;
+	Money0914() {
+		this.money = money;
+		this.fivem = fivem;
+		this.m = m;
+		this.fivec = fivec;
+		this.c = c;
+		this.fiveb = fiveb;
+		this.b = b;
+		this.minus = minus;
+	}
+	public void show() {
+		do {
+			System.out.println("얼마입니까");
+			Scanner sc = new Scanner(System.in);
+			int money = sc.nextInt();
+			fivem = money / 50000;
+			minus = money % 50000;
+			m = minus / 10000;
+			minus %= 10000;
+			fivec = minus / 5000;
+			minus %= 5000;
+			c = minus / 1000;
+			minus %= 1000;
+			fiveb = minus / 500;
+			minus %= 500;
+			b = minus / 100;
+			System.out.println("오만원:" + fivem + "장");
+			System.out.println("만원:" + m + "장");
+			System.out.println("오천원:" + fivec + "장");
+			System.out.println("천원:" + c + "장");
+			System.out.println("오백원:" + fiveb + "개");
+			System.out.println("백원:" + b + "개");
+			System.out.println("계속 하시겠습니까?");
+			Scanner sc0 = new Scanner(S
+      
+      //한빈
+      
+      import java.util.Scanner;
+
+class CountCurrent{
+	private int m5,m1,c5,c1,b5,b1;
+	
+	private int money;
+	
+	public CountCurrent(int money) {
+		this.money = money;
+		this.m5 = money/50000;
+		this.m1 = (money%50000)/10000;
+		this.c5 = (money%10000)/5000;
+		this.c1 = (money%5000)/1000;
+		this.b5 = (money%1000)/500;
+		this.b1 = (money%500)/100;
+	}
+	
+	public void show() {
+		System.out.println(money);
+		System.out.println("오만원 : " + m5 + "장");
+		System.out.println("만원 : " + m1 + "장");
+		System.out.println("오천원 : " + c5 + "장");
+		System.out.println("천원 : " + c1 + "장");
+		System.out.println("오백원 : " + b5 + "개");
+		System.out.println("백원 : " + b1 + "개");
+	}
+}
+public class Practice01 {
+
+	public static void main(String[] args) {
+		for(int i = 1; true ; i++) {
+		Scanner sc = new Scanner(System.in);
+		System.out.println("금액을 입력하세요");
+		int current = sc.nextInt();
+		
+		System.out.println(current + "원");
+		
+		CountCurrent count = new CountCurrent(current);
+		count.show();
+		
+		System.out.println("계속 하시겠습니까?");
+		String answer = sc.next();
+		
+		if(answer.equals("y") || answer.equals("Y")) {
+			continue;
+		} else {
+			break;
+		}
+		
+	}
+  
+  
+  //혁진
+  
+  public class Money {
+	public int total;
+	public int temp;
+
+	public void setMon(int total) {
+		this.total = total;
+	}
+
+	public void count(){
+		System.out.println("5만원:" + total/50000 +"장");
+		temp = total%50000;
+		System.out.println("만원:" + temp/10000 +"장");
+		temp = temp%10000;
+		System.out.println("5천원:" + temp/5000 +"장");
+		temp = temp%5000;
+		System.out.println("천원:" + temp/1000 +"장");
+		temp = temp%1000;
+		System.out.println("5백원:" + temp/500 +"장");
+		temp = temp%500;
+		System.out.println("백원:" + temp/100 +"장");
+		temp = temp%100;
+	}
+}
+import java.util.Scanner;
+
+public class MoneyCount {
+
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+		Money mon = new Money();
+		int money;
+		String str = null;
+		
+		for (int i = 1; i < 10; i++) {
+			System.out.println("총액을 입력하세요");
+			money = sc.nextInt();
+			mon.setMon(money);
+			mon.count();
+			System.out.println("계속 하시겠습니까?");
+			if(str.equals("y")) {
+				continue;
+			}else if(str.equals("n")) {
+				System.out.println("프록램을 종료합니다.");
+			}break;
+		}
+		
+	}
+}
+//승환
+
+import java.util.Scanner;
+
+public class MoneyCount {
+
+	public static void main(String[] args) {
+		try (Scanner sc = new Scanner(System.in)) {
+			Money mon = new Money();
+			int money;
+			String str;
+			
+			for(int i=0;i<10;i++) {
+				System.out.println("돈을 입력하세요.");
+				money = sc.nextInt();
+				mon.setMon(money);
+				mon.count();
+				System.out.println("계속하시겠습니까");
+				str = sc.next();
+				if (str.equals("y")) {
+					continue;
+				} else if (str.equals("n")) {
+					System.out.println("프로그램 종료 입니다.");
+					break;
+				}
+				
+			}
+		}
+		
+	}
+
+}
+public class Money {
+	private int mon;
+	private int min;
+	
+	public void setMon(int mon) {
+		this.mon = mon;
+	}
+	
+	public void count() {
+		System.out.println("오만원 : "+ mon/50000+"장");
+		min = mon%50000;
+		System.out.println("만원 : "+ min/10000+"장");
+		min = min%10000;
+		System.out.println("오천원 : "+ min/5000+"장");
+		min = min%5000;
+		System.out.println("천원 : "+ min/1000+"장");
+		min = min%1000;
+		System.out.println("오백원 : "+ min/500+"개");
+		min = min%500;
+		System.out.println("백원 : "+ min/100+"개");
+	}
+}
+
