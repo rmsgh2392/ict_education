@@ -1,0 +1,36 @@
+1. 메소드 오버로딩이란? 
+2. 생성자 오버로딩이란?
+3. 메소드 오버로딩을 적용한 대표적인 함수는?
+4. this의 용도는?
+5. this 함수에 대하여 설명하시오.
+6. 스트링 객체를 생성하는 2가지 방법은?
+7. 아래의 결과를 예측하고,이유를 설명하시오.
+
+String str1 = "Simple String"; 
+String str2 = "Simple String";
+
+String str3 = new String("Simple String");
+String str4 = new String("Simple String");
+
+//참조변수의 참조 값 비교
+if(str1 == str2)
+   System.out.println("str1과 str2는 동일 인스턴스 참조");
+else
+   System.out.println("str1과 str2는 다른 인스턴스 참조");
+
+//참조변수의 참조 값 비교
+if(str3 == str4)
+   System.out.println("str3과 str4는 동일 인스턴스 참조");
+else
+   System.out.println("str3과 str4는 다른 인스턴스 참조");
+
+8. imutable 에 대하여 설명하시오.
+9. 사용자로부터 받은 문자열(영문으로)에서 자음과 모음 개수를 계산하는 프로그램을 작성하라.
+(연속적이로 종료하시겠습니까 y 할때 까지 계속)
+10.사용자에게 받은 문자열을 역순으로 화면에 출력하는 프로그램을 작성하시오.
+
+입력:abcde
+출력:edcba
+
+11.2와 100 사이에 있는 모든 소수(prime number)를 찾는 프로그램을 작성하라. 
+(주어진 정수 k를 2부터 k-1까지의 숫자로 나누어서 나머지가 0인 것이 하나라도 있으면 소수가 아니다.)
