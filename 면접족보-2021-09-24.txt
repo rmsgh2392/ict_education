@@ -1,8 +1,22 @@
 1. 상속을 UML로 표기해 보세요.
+       <Person>
+           ▲
+           |
+       <Student>
+	
 2. 부모 클래스와 자식 클래스의 다른 용어들은?
+    상위클래스와 하위클래스 등등이 있다 
 3. super 키워드와 this 키워드의 차이는 무엇인가요?
+   (1) this 키워드 
+       this.변수명은 자기자신 클래스에 인스턴스 변수들을 지칭하며 매개변수로 들어오는 데이터와 분별한다.
+       예) this.num = num;
+       this(); this함수는 생성자 호출 함수로서 클래스 자신의 생성자 함수를 호출한다. 초기화
+   (2) super 키워드
+       super(); 자식클래스가 상속받고 있는 부모클래스에 생성자 함수를 호출하며 함수 안에 데이터가 있으면 초기화해준다.
+       super.변수 , super.함수() 부모가 가지고 있는 변수나 메서드를 가져와 자식클래스에서 사용할 수 있다.
 4. 단일 상속과 다중 상속 이란?
-
+   [1].단일 상속 : 하나의 부모클래스가 있으면 자식클래스가 상속받는거 즉 하나의 자식이 단 하나의 부모만 상속 받을 수 있따.
+   [2].다중 상속 : 한 자식 클래스가 여러 부모클래스를 상속하는 것을 다중상속이라한다.
 5. 다음 코드와 같이 과목과 점수가 짝을 이루도록 2개의 배열을 작성하라.
 
 
@@ -95,31 +109,6 @@ public static void main(String[] args) {
 (100,200,300) 의 점입니다.
 */
 ```
-9. 프로그래밍 Point series_03
-
-Point를 상속받아 3차원의 점을 나타내는 Point3D 클래스를 작성하라. 다음 main() 메소드를 포함하고 실행 결과와 같이 출력되게 하라.
-
-```java
-public static void main(String[] args) {
-	Point3D p = new Point3D(1,2,3); // 1,2,3은 각각 x, y, z축의 값.
-	System.out.println(p.toString()+"입니다.");
-	p.moveUp(); // z 축으로 위쪽 이동
-	System.out.println(p.toString()+"입니다.");
-	p.moveDown(); // z 축으로 아래쪽 이동
-	p.move(10, 10); // x, y 축으로 이동
-	System.out.println(p.toString()+"입니다.");
-	p.move(100,  200, 300); // x, y, z축으로 이동
-	System.out.println(p.toString()+"입니다.");
-}
-
-/*
-=======================
-(1,2,3) 의 점입니다.
-(1,2,4) 의 점입니다.
-(10,10,3) 의 점입니다.
-(100,200,300) 의 점입니다.
-*/
-```
 10.다음 TV 클래스가 있다.
 
 class TV{
@@ -128,7 +117,7 @@ class TV{
    protected int getSize() { return size; }
 }
 
-[1번] 다음 main() 메소드와 실행 결과를 참고하여 TV를 상속받은 ColorTV 클래스를 작성하라.
+[1번] 다음 main() 메소드와 실행 결과를 참고하여 TV를 상속받은 ColorTV 클래스를 작성하라. --완료
 
 public static void main(String[] args) {
    ColorTV myTV = new ColorTV(32, 1024);
