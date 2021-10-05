@@ -1,0 +1,137 @@
+관계형데이터베이스(RDBMS) : 2차원 표모양(TABLE)으로 표현 (논리적모델링)
+테이블 사이 비즈니스 관계 Relationship(제약사항(foreignkey)제공되는 값만 사용가능 null값은 비워둘수 있음)
+두 테이블 관계 : 일대일 관계 일대다 관계 ...
+
+ERD : Entity (자바에서 클래스), Attribute(멤버변수,필드)
+테이블은 컬럼과 행으로 구성
+
+클래스, 데이터베이스 다이어그램에서 화살표는 제공자 없는쪽이 사용자 (일반적으로는 반대 )
+예) USER TABLE  -----> DEPT TABLE
+   사용하는 테이블      제공하는 테이블
+
+DQL : SELECT(데이터 검색)
+DML : INSERT, UPDATE, DELETE(데이터조작)
+DDL : CREATE, DROP, ALTER(테이블 정의)
+TCL : COMMIT, ROLLBACK, SAVE AS (트랜잭션 제어)
+
+*SQL데이터 타입*
+사진,문서,동영상등 : BLOB
+숫자(실수나 정수)는 모두 : NUMBER
+문자(고정) : CHAR 예)CHAR(4)..CHAR(6) 
+문자(가변) : VARCHAR2(33)...VARCHAR(40) 
+!중요!
+영어는 1바이트 한글은 2바이트를 메모리를 잡게되는데 KIMCHI라는 글자는 CHAR(8)이면 2바이트가 남게되는데 남는 공간은 공백으로 채우게된다.
+
+========================================================
+*SQL 구문*
+sql에서 주석 처리  ==>  한 문장 주석처리 : -- ...COMMENT...
+                  ==>  여러 문장 : /* ... COMMENT... */
+sql구문은 대소문자 구분 안함 단 저장된 값(데이터)은 구분!
+
+**일반 개발자가 데이터베이스를 사용하려면**
+(1)관리자로부터 사용자계정과 암호를 받아야함
+  -->관리자가 사용자계정과 암호를 만드는 구문은? 
+  -->CREATE USER 사용자계정 IDENTIFIED BY 암호;
+
+(2)관리자가 사용자계정에 대해 데이터베이스 접속 권한과 
+   데이터베이스 자원을 사용할 수 있는 권한을 부여해야함
+ --> 권한부여 명령어 
+-->GRANT 권한종류 || ROLE이름 TO 사용자계정;
+-->여러종휴에 권한종류를 모아놓은 ROLE객체를 준다.
+-->접속만 할수 있는 권한 명령어 CONNECT
+   GRANT CONNECT TO 사용자계정
+-->그럼 데이터를 사용할 수 있는 권한들을 모아 놓은 ROLE객체
+-->RESOURCE 권한을 부여함 GRANT RESOURCE TO 사용자계정
+-->18c버전에서는 권한부여 후에 데이터 기록을 위한 
+   테이블스페이스 할당을 해야함
+-->테이블 스페이스 할당 권한 부여 
+   ALTER USER c##student QUOTA 1024M ON USERS;
+
+**수업진행을 위한 사용자계정만들기**
+--> 18C XE에서는 사용자계정 글자 앞에 반드시 C## 을 붙여줘야함
+--> CREATE USER c##root IDENTIFIED BY c##root 
+
+**SQL 데이터베이스 제약조건 4가지**
+(1) Foreign Key(FK) : 두 테이블이 있다고 가정했을때 한 테이블에서 다른 테이블을 참조하여 데이터을 사용하기 위해 
+                  컬럼에 FK를 지정한다.
+(2) CHECK : 컬럼에 데이터 값이 NOT NULL 이면 무조건 값이 있어야 되며 NULL이면 있어도 되고 없어도 된다.
+            예로 MERRIGE IN ('Y', 'N') 이면 MERRIGE컬럼에 데이터로는 무조건 대문자 Y, N을 저장해야된다.
+(3) PRIMARY KEY(PK) : 한 테이블에서 유일한 값을 가지는 컬럼으로 같은 값을 기록하지 못한다.
+(4) UNIQUE : PK와 비슷하며 같은 값을 두번 기록 못 한다.
+
+** SQL 기본 실행 순서 **
+SELECT --> 3. 마지막으로 사용자 즉 개발자가 가지고 오고 싶은 컬럼명을 입력하여 가져온다
+FROM ---> 1. 첫번째로 어떤 테이블에서 값을 조회할건지 조회 하고 싶은 테이블을 입력
+WHERE --> 2. If절이며 from에서 조회 할 테이블에서 조건에 맞는 행을 테이블을 하나씩 조회하며 데이터를 골라낸다.
+
+** SELECT 구문 작성 형식 **
+<1> 순서
+5. SELECT * | 컬럼명 | 계산식 | [AS 별칭]
+1. FROM
+2. WHERE 컬럼명 비교연산자 비교값들이 올수 있다. 조건에 맞는 조회 결과를 행 단위로 필터링
+   (1) 비교연산자 : > , < , >=, <= , =, LIKE (같음), != , <>, ^= (같지 않음 3가지 표현)
+   (2) 논리연산자 : AND, OR
+3. GROUP BY 컬럼명 | 계산식
+4. HAVING 그룹함수를 가지고 비교연산자 비교값 (GROUP BY를 가지고 처리) 그룹별 조건에 해당하는 그룹을 선택함 
+GROUP BY 와 HAVING은 세트!!
+6. ORDER BY 컬럼명 정렬기준 , 순번 정렬기준, 별칭기준 정렬 (ASC 오름차순, DESC 내림차순으로 표현)
+
+** NVL() 함수 **
+SELECT 절에는 컬럼명도 올수 있고 함수 그리고 계산식도 올 수 있다. 하지만 이 계산식에서 NULL값이 포함되어 
+계산된 값이 NULL이면 무조건 NULL로 가져온다. 이 NULL 값에 대한 문제를 해결하기 위해 ORACLE에서 함수를 제공한다.
+--> NVL(값을 읽어올 컬럼명, NULL일때 바꿀 값[NULL이 아니면 바꾸지 않는다.])
+--> 예)
+SELECT EMP_ID, EMP_NAME,                                     
+     SALARY, (SALARY * 12) , 
+    (SALARY + (SALARY * BONUS_PCT)) * 12   
+FROM EMPLOYEE;
+         ↓
+SELECT EMP_ID 사번, EMP_NAME  "사원 이름", 
+       SALARY, SALARY * 12  "1년 급여", 
+       (SALARY + (SALARY * NVL(BONUS_PCT,0))) * 12  "총 소득" 
+FROM EMPLOYEE;
+
+**별칭 쓸 때 주의사항
+(1) AS는 생략 가능하다. --> 컬럼명 별칭
+(2) 별칭에 숫자, 공백, 기호를 사용하면 반드시 " 별칭 " 더블 쿼터를 사용하여 작성한다.
+(3) 별칭은 글자 30byte이하 작성가능(지금은 업뎃되서 많이 가능 )
+
+** LENGTHB() 함수 ** 
+기본적으로 오라클 정품은 한글 1글자는 2byte이지만 xe버전에선 한글을 3byte로 잡는다.
+글자 수를 구하는 함수 LENGTHB('한글'), LENGTH('ORACLE')
+--기본적으로 SELECT 구문에선 FROM 절을 반드시 써야된다.
+--하지만 글자 수를 구하기 위해서 조회 할 테이블이 없을때
+--오라클에서 제공하는 DUMMY 더미테이블 즉 가짜테이블을 사용해 조회한다 --> DUAL 테이블
+
+SELECT LENGTHB('한글'), LENGTH('ORACLE')
+FROM DUAL;
+
+** SELECT절에 리터럴 (임의의 문자열 값) **
+--가상의 컬럼이 하나 추가됨
+--SELECT한 데이터들의 상태값 표시용으로 이용할 수 있음
+--'리터럴 문자열 값' AS 별칭
+SELECT EMP_ID, EMP_NAME,
+        '재직' 근무여부
+FROM EMPLOYEE;
+
+** DISTINCT ** 
+SELECT 절에 컬럼명 앞에 사용하며 중복을 제거해서 데이터를 조회해 가져온다. 
+딱 한번만 사용할 수 있으며 여러 컬럼명을 표현하고 싶을 때 
+ --> DISTINCT 컬럼명, 컬럼명, 컬럼명....
+SELECT DISTINCT DEPT_ID  
+FROM EMPLOYEE;
+
+--두 컬럼의 값을 하나의 값으로 보고 중복을 판단함
+--예) 'J3 50', 'J3 60' 은 다른 값!!!
+SELECT DISTINCT JOB_ID, DEPT_ID
+FROM EMPLOYEE;
+
+
+
+
+
+
+
+
+
+
