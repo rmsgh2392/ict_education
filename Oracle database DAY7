@@ -1,0 +1,151 @@
+============== 배운 내용 ====================
+1. 집합연산자
+
+
+
+
+
+
+===================================================
+* 집합 연산자 *
+-> 각 SELECT문(여러개)의 실행 결과 (결과 집합인 ResultSet)를 하나로 표현하기 위해 사용한다.
+-> 종류에는 UNION, UNION ALL, INTERSECT, MINUS
+-> UNION (합집합): 두 개의 RESULT SET의 결과를 하나로 합친다. 두개의 RESULT SET에 중복 값이 있으면 중복되는 행을 하나만 선택해 포함해 표현한다.
+-> UNION ALL(합집합) : UNION과 같이 결과를 하나로 합치고 UNION과는 다르게 중복되는 값 들을 다 포함시키며 값이 여러개 있어도 모든 행을 포함
+-> INTERSECT(교집합의 의미) : 두 테이블의 Result Set 결과에서 겹치는 (중복, 일치되는) 행을 선택한다.
+-> MINUS(차집합) : 첫 번재 Result Set에 결과 값에서 두번 째 Result Set과 겹치는 행을 제외하고 나머지 행을 선택한다.
+-> !JOIN은 일치하는 컬럼들을 연결시켜 합치는 의미이며 SET연산자는 행들을 합치는 의미이다.!
+※ SET OPERAOTR 사용시 주의할점 ※
+	-> 각 쿼리문의 SELECT 절의 컬럼 갯수와 각 컬럼별 자료형이 반드시 같아야 한다.
+	-> 만약 컬럼 갯수가 많지 않으면 더미컬럼(DUMMY COLUMN - NULL칸)을 사용할 수 있다.
+	-> 문자 타입은 문자 타입끼리, 숫자 타입은 숫자 타입끼리, 날짜타입은 날짜타입끼리 자료형이 같아야한다.
+	-> 하지만 더미 컬럼 즉 NULL칸은 타입의 상관없이 사용한다.
+	-> 예) 1. 갯수가 많지 않을 때
+				SELECT EMP_NAME, JOB_ID, HIRE_DATE
+				FROM EMPLOYEE
+				WHERE DEPT_ID LIKE '20' -- SELECT절에 컬럼 갯수 3개 
+				UNION                                             --> 컬럼 갯수가 많지 않으므로 더미컬럼을 사용하여 맞춰줘야 한다.
+				SELECT DEPT_NAME, DEPT_ID -- 컬럼 갯수 2개   -> DUMMY COLUMN 사용시
+				FROM DEPARTMENT                            	-> SELECT DEPT_NAME, DEPT_ID, *NULL* 
+				WHERE DEPT_ID LIKE '20';                    -> FROM DEPARTMENT WHERE DEPT_ID LIKE '20'
+				2. 각 컬럼별 자료형 불일치
+					SELECT EMP_NAME, JOB_ID, HIRE_DATE
+					FROM EMPLOYEE
+					WHERE DEPT_ID LIKE '20'
+					UNION --ERROR NULL은 자료형과 상관이 없지만 HIRE_DATE는 날짜형인데 DEPT_ID가 문자형이라
+								--타입이 안맞아서 ERROR가 난다.
+					SELECT NULL, DEPT_NAME, DEPT_ID  -> 해결: SELECT DEPT_ID, DEPT_NAME, NULL 
+					FROM DEPARTMENT                         -> NULL은 타입의 상관없이 사용이 가능하기 때문에 
+					WHERE DEPT_ID LIKE '20';                -> DEPT_ID 대신에 써주고 위에 HIRE_DATE와 맞춰준다.
+	===============================================================================================================
+	*서브 쿼리 (SUBQUERY) *
+		-> 함수( 리턴 값이 있는 함수( ) ) => 안에 있는 함수가 먼저 실행이 되고, 리턴한 결과값을 바깥 함수가 사용하는 구조
+		-> SELECT 구문에서도 컬럼명, 비교연산자, 비교값, 비교값을 알아내기 위한 SELECT 구문을 WHERE절에 비교값 자리에 
+		-> 바로 사용할 수 있다.
+		-> SELECT 컬럼명 FROM 테이블 명
+		-> WHERE 컬럼명 비교연산자 (컬럼명과 비교하기 위해 비교값을 알아내기 위한 SELECT 구문)
+		-> (컬럼명과 비교하기 위해 비교값을 알아내기 위한 SELECT 구문) : 서브쿼리 또는 내부쿼리라고 하며 
+		-> 바깥에 SELECT 구문을 메인쿼리 또는 외부쿼리라고 한다.
+		-> 서브쿼리는 SELET절, FROM절, WHERE절, HAVING절에 주로 쓰이며 ( ) 괄호로 묶어서 표현하며 ( ) 끝에 ; 세미콜론을 쓰지 않는다.
+		-> SELECT 컬럼명....
+			 FROM ....테이블명
+			 WHERE 컬럼명, 계산식 연산자 ( 서브 쿼리 ) -> 서브쿼리의 유형에 따라 연산자를 구분해서 사용해야된다.
+	[1] 서브 쿼리의 유형
+		=> 단일 행 서브쿼리, 다중 행 서브쿼리, 다중 열 다중 행 서브쿼리, 상호연관 서브쿼리, 스칼라 서브쿼리등이 있다.
+		=> 유형별로 서브쿼리 앞에 연산자가 다르기 때문에 잘 파악해서 연산자를 사용해야한다 !!!!
+		
+		1. 단일 행 서브쿼리 : 간단히 말해서 서브쿼리의 결과 값 즉 행이 1개인 서브쿼리
+				-> 단일 행 서브쿼리 앞에는 일반 비교연산자를 사용할 수 있다. 예) <, >, <=, >=, =, !=, ^=, <>...
+		2. 다중 행 서브쿼리 : 서브쿼리 결과 값 즉 행이 여러개인 서브쿼리 (값이 여러개)
+				-> 다중 행 서브쿼리인 경우 단일 행 서브쿼리 처럼 일반 연산자를 사용할 수 없고 LOOP를 돌면서 여러번 물어볼 수 있는 
+				-> 즉 여러 개의 값을 비교할 수 있는 연산자를 사용해야 한다.
+				-> IN, ANY, ALL 연산자
+		    (1) IN 연산자
+				 -> 서브쿼리가 반환하는 여러 개의 값 들을 자바에 FOR문처럼 LOOP를 돌면서 서브쿼리의 값 들을 모두 한번 씩 비교하면서 같은 지 확인한다.
+				 -> WHERE 컬럼명 IN (값1, 값2, 값3) => 컬럼명 IN (다중 행 서브쿼리)
+				 -> 컬럼값 = 값1 OR 컬럼값 = 값2 OR 컬럼값 = 값3 OR .....
+				 -> 컬럼값이 여러 개의 값 중에 일치하는 값이 있다면 컬럼값을 선택한다.
+				 -> SELECT EMP_ID, EMP_NAME	
+				 			     DEPT_ID, SALARY
+				    FROM EMPLOYEE
+						WHERE SALARY IN (SELECT MIN(SALARY) -> 부서별로 그룹(10,20,..90 부서)핑 해 각 그룹안에 직원들의 최소급여만 뽑아냄
+														 FROM EMPLOYEE --> 7행 서브쿼리의 결과 값이 7개
+														 GROUP BY DEPT_ID);
+							-> 메인쿼리에 급여를 1행을 가져와 서브쿼리의 7행을 모두 비교하면서 일치하면 출력한다.
+				(2) ANY 연산자
+				 	-> 서브쿼리의 여러 개의 값을 비교하면서 한개라도 TRUE 값이 있으면 선택해 출력한다. OR의 개념
+					-> 컬럼명 > ANY, 컬럼명 < ANY, 컬럼명 = ANY(IN 연산자와동일)
+					-> 컬럼명 > ANY (다중 행 서브쿼리) : 가장 작은 값보다 큰 값을 선택
+					   컬럼명 > ANY (값1, 값2, 값3) =>  컬럼명 > 값1 OR 컬럼명 > 값2 OR 컬럼명 > 값3
+						 
+					-> 컬럼명 < ANY (다중 행 서브쿼리) : 가장 큰 값보다 작은 값을 선택
+					   컬럼명 < ANY (값1, 값2, 값3) =>  컬럼명 < 값1 OR 컬럼명 < 값2 OR 컬럼명 < 값3
+						 => 값을 다 비교해서 하나라도 맞는 값이 있으면 선택한다.
+						 
+				(3) ALL 연산자 (AND, AND, AND...의 의미)
+					-> 서브쿼리의 여러개의 값을 비교하면서 하나씩 비교하면서 모든게 만족 하는 값이 있으면 선택 AND의 개념
+					-> 컬럼명 > ALL, 컬럼명 < ALL
+					-> 컬럼명 > ALL (다중 행 서브쿼리) : 가장 큰 값보다 큰
+					   컬럼명 > ALL (값1, 값2, 값3) => 컬럼명 > 값1 AND 컬럼명 > 값2 AND 컬럼명 > 값3 ....
+					-> 컬럼명 < ALL (다중 행 서브쿼리) : 가장 작은 값보다 작은
+						 컬럼명 < ALL (값1, 값2, 값3) => 컬럼명 < 값1 AND 컬럼명 < 값2 AND 컬럼명 < 값3 ....
+		
+		    ※ 서브쿼리의 사용 위치 : SELECT절(스칼라), FROM절(인라인뷰), WHERE, HAVING, GROUP BY, ORDER BY절, 
+															  INSERT구문, UPDATE문, CREATE문, TABLE문, CREATE VIEW문
+				(4) 다중 행, 다중 열 서브쿼리 
+				   -> 서브쿼리의 SELECT 절에 컬럼이 여러개인 경우 : 다중 열
+					 -> 메인쿼리 WHERE (비교컬럼명, 비교컬럼명 ) 연산자 (서브쿼리 항목1, 서브쿼리 항목 2)
+					 -> 서브쿼리의 SELECT절의 항목의 갯수와 일치시켜야 되고 자료형 타입까지 맞아야 된다.
+					 
+				(5) FROM절에 서브쿼리 사용 
+				  -> FROM절에 서브쿼리를 사용할 수 있다 이 서브쿼리를 테이블 대신에 사용한다.
+					-> FROM (서브쿼리) 별칭 <-- FROM절에 오는 서브쿼리 뒤에 별칭을 쓸수 있으며 별칭이 테이블을 대신한다.!
+					-> FROM 절에서 서브쿼리가 만든 결과 집합에 대한 테이블을 인라인 뷰라고 한다. (INLINE VIEW)
+					
+				(6) 상[호연]관 서브쿼리
+				  -> 대부분의 서브쿼리는 서브쿼리가 만들어 낸 결과 값(행)을 메인쿼리가 비교하거나 가져다 사용한다.
+					-> 하지만 상호연관 서브쿼리 즉 상관 서브쿼리는 서브쿼리가 메인쿼리의 값을 가져가 사용하는 구조이다.
+					-> 그러므로 메인쿼리의 값이 바뀌면 서브쿼리의 결과도 달라진다.
+				
+				(7) EXISTS , NOT EXISTS 연산자
+					-> 상호연관 서브쿼리 앞에서만 사용한다.
+					-> 서브쿼리가 만든 결과가 존재하는지 존재 여부를 묻는 연산자 = EXISTS
+					-> 존재 하지 않는지 묻는 연산자를 = NOT EXISTS
+					-> 여기서 주의 할점은 서브쿼리의 SELECT 절에는 NULL을 사용해야 한다.
+					-> 예) SELECT EMP_ID, EMP_NAME, '관리자'
+								 FROM EMPLOYEE E
+								 WHERE EXISTS (SELECT NULL
+								 							FROM EMPLOYEE 
+															WHERE E.EMP_ID LIKE MGR_ID) --> 직원중 관리자인 직원 조회
+															
+								 SELECT EMP_ID, EMP_NAME, '직원'
+								 FROM EMPLOYEE E
+								 WHERE NOT EXISTS (SELECT NULL
+								 									 FROM EMPLOYEE
+																	 WHERE E.EMP_ID LIKE MGR_ID) --> 관리자가 아닌 직원 조회
+				(8) 스칼라 서브쿼리 (SCALA SUBQUERY)
+						-> 단일 행 서브쿼리 + 상호 연관 서브쿼리
+						-> 예) SELECT EMP_NAME, DEPT_ID, SALARY,
+													(SELECT TRUNC(AVG(SALARY), -5)
+													 FROM EMPLOYEE
+													 WHERE E.DEPT_ID LIKE DEPT_ID) AVGSAL
+									 FROM EMPLOYEE E
+									 
+				(9) ORDER BY 절에 스칼라 서브쿼리  
+				
+		==============================================================================================
+		* TOP-N 분석 *
+		-> 어떤 정보가 상위 몇개 또는 하위 몇개를 조회하는것
+		-> 방법은 2가지 
+		-> (1) INLINE VIEW 인라인 뷰와 RANK() 함수를 사용
+					-> 예) 직원 정보에서 급여를 가장 많이 받는 직원 5명을 조회 이름 , 급여 , 순위 출력
+							   SELECT *
+								 FROM (SELECT EMP_NAME, SALARY,
+								 							RANK() OVER(ORDER BY SALARY DESC) 순위
+								 WHERE 순위 <= 5;
+								 
+								 
+		   (2) ROWNUM 을 사용 행번호를 의미
+			 	-> WHERE절 처리 후에 자동으로 부여된다.
+				-> ORDER BY 한 결과에 ROWNUM을 붙이는 작업을 해야한다.== 서브쿼리를 이용
+		
