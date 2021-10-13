@@ -1,0 +1,194 @@
+===========================복습 내용============================================
+1. DDL 
+2. 테이블 생성
+3. 제약조건
+
+================================================================================
+1..DDL (DataBase Definition Language : 데이터 정의어)
+  -> 데이터베이스 객체를 생성/변경/제거 에 사용되는 SQL 명령어를 제공한다.
+  -> 명령어 : CREATE (객체 생성), DROP( 객체 제거), ALTER( 객체 변경시)
+  -> 데이터베이스 객체 : 테이블(TABLE), 뷰(VIEW), 시퀀스(SEQUENCE), 인덱스(INDEX), 프로시저, 트리거등이 있다.
+  
+2..테이블 생성
+-> 작성형식 : CREATE TABLE 테이블 명 (...); 
+ < 테이블 NAMING RULE > 
+-> 테이블 및 컬럼 이름은 문자로 시작해야되며, 30자 이하로 작성해야하며, 영문 대/소문자 상관없이 작성 가능하며
+-> 숫자, 특수문자(_, $, #)를 허용한다. 중복되는 테이블 이름을 사용할 수 없으며 예약키워드 (CREATE, WHERE, COLUMN등등)을 사용할 수 없다.
+
+-> 테이블 생성 
+-> CREATE TABLE 테이블 명 (
+      컬럼명 자료형(크기) [ DEFAULT 컬럼에 사용 할 기본 값을 적어줄 수 있다.(생략가능함) ],
+      컬럼명 자료형(크기) [ 제약조건 종류를 명시 ],
+      컬럼명 자료형(크기) [ CONSTRAINT 이름 제약조건종류 ], -> 생략가능하며 컬럼 옆에 제약조건을 설정하는 것을 <컬럼레벨 제약조건>
+      컬럼명 자료형(크기) DEFAULT 기본값 CONSTRAINT 저장이름 제약조건종류(다 적을 수 있음),
+      컬럼명 자료형(크기) [CONSTRAINT 저장이름] 제약조건1 [CONSTRAINT 저장이름] 제약조건2 여러개 가능 <= 컬럼레벨 제약조건,
+   ★ 컬럼을 다 구성한 다음 마지막에 제약조건만 따로 지정할 수 있다 -> 테이블 레벨 제약조건
+      제약조건종류 (적용할 컬럼명)
+      CONSTRAINT 저장할 이름 제약조건종류 (적용할 컬럼명)
+  );
+  
+  -> CREATE TABLE TEST(); -- ERROR : 컬럼을 1개라도 써줘야 테이블 생성이 가능하다.
+  -> CREATE TABLE TEMP(
+      TEMP_ID VARCHAR2(20),
+      TEMP_PWD VARCHAR(20),
+      TEMP_NAME VARCHAR(30),
+      AGE NUMBER, 
+      ENROLL_DATE DATE
+    );
+    COMMENT ON COLUMN TEMP.TEMP_ID IS '아이디';
+    COMMENT ON COLUMN TEMP.TEMP_PWD IS '비밀번호';
+    COMMENT ON COLUMN TEMP.TEMP_NAME IS '이름';
+    COMMENT ON COLUMN TEMP.AGE IS '나이';
+    COMMENT ON COLUMN TEMP.ENROLL_DATE IS '가입한날짜';
+    -> 컬럼에 설명을 달고 싶으면 COMMENT ON COLUMN 테이블명.컬럼명 IS '설명';
+ 3. 무결성 제약조건 (CONSTRAINTS)
+ -> 데이터의 무결성: 테이블의 데이터가 기록될 때 또는 변경 또는 삭제될때 데이터의 결점 오류가 없게 하는 기능(성질)검사를 한다.
+ -> 다시 말해 테이블의 데이터가 기록 될때 그 데이터가 제약조건에 맞게 들어왔는지 오류 또는 결점이 없는지 검사를 하는 기능이다.
+ 
+ -> 제약조건도 따로 관리되며 이름으로 관리되기 때문에 이름을 붙여주는 것을 권장한다.
+ -> 이름을 따로 지정해주지 않으면 테이블 생성시 동시에 자동으로 생성된다.
+ -> 이름을 지어줄 때 형식이 있다 
+ -> 컬럼 LEVEL에서의 제약조건 이름 짓기 : CONSTRAINT 저장할 이름 제약조건종류
+ -> 테이블 LEVEL에서의 제약조건 이름 짓기 : CONSTRAINT 저장할 이름 제약조건종류(적용할 컬럼명) 
+ -> 이름을 따로 지정 안할 시 SYS_C********* 형식으로 자동으로 생성되어 저장된다.
+ -> 테이블레벨에서 여러개의 컬럼들을 묶어서 하나의 제약조건을 지정할 수도 있다. 이것을 복합키라고한다.
+ -> CONSTRAINT 저장할 이름 제약조건종류 (컬럼명1, 컬럼명2, 컬럼명3 ....) --테이블레벨 복합키
+ -> 기본은 한 컬럼당 하나의 제약조건이 기본이다.
+ 
+ (1) 제약조건 종류 - 5가지가 있다.
+    1. NOT NULL (ONLY 컬럼레벨에서만 사용)
+    2. UNIQUE (컬럼레벨, 테이블레벨)
+    3. PRIMARY KEY (컬럼레벨, 테이블레벨)
+    4. CHECK (컬럼레벨, 테이블레벨)
+    5. FOREIGN KEY (컬럼레벨, 테이블레벨)
+  ===========================================================
+  1. NOT NULL : 반드시 값을 기록해야 될 때 적용한다.(필수 입력 항목인 컬럼)
+                컬럼 값에 NULL 값을 기록못한다, 컬럼레벨에서만 설정 가능!!!
+    예) CREATE TABLE TEST(
+            ID CHAR(3) NOT NULL, <- 컬럼레벨에서만 설정 가능
+            PWD VARCHAR2(20) 
+        );
+       CREATE TABLE TEST(
+            ID CHAR(3),
+            PWD VARCHAR2(20),
+            CONSTRAINT NN_TT_ID NOT NULL (ID) <- ERROR : NOT NULL은 테이블 레벨에서 설정 못한다.
+       );
+  2. UNIQUE (중복체크) : 컬럼에 기록되는 중복 값(같은 값 두번기록)을 막는 제약조건 / 중복 기록을 막는 검사 기능
+     만약 같은 값을 두번 기록하면 ERROR 나며 빈칸 즉 NULL은 여러개 있어도 상관 없다.
+     컬럼레벨과 테이블레벨에서 사용 가능하다.
+    예) <컬럼레벨 설정> 
+       CREATE TABLE TEST (
+          ID CHAR(3) [ CONSTRAINT 이름 ] UNIQUE --컬럼레벨
+          PWD VARCHAR2(20),
+          NAME VARCHAR(15) NOT NULL
+    ); 
+        <테이블 레벨>
+       CREATE TABLE TEST(
+            ID CHAR(3),
+            PWD NUMBER, --> 숫자 타입은 크기를 지정해주지 않으면 기본값 7자리
+            NAME VARCHAR(15) CONSTRAINT NN_TT_NAME NOT NULL,
+            CONSTRAINT UN_TT_ID UNIQUE (ID) <-- 테이블레벨
+       );
+   ★ UNIQUE 제약조건은 테이블 레벨 설정에서 복합키로 설정 할 수 있다.
+      복합키란 여러개의 컬럼을 묶어서 설정하는 것이고 묶여진 컬럼들을 하나씩 판단하는 것이 아니라 
+      묶어 놓은 컬럼들을 하나로 판단해서 중복 검사를 해준다.
+            CREATE TABLE TEST(
+            ID CHAR(3),
+            PWD NUMBER, --> 숫자 타입은 크기를 지정해주지 않으면 기본값 7자리
+            NAME VARCHAR(15) CONSTRAINT NN_TT_NAME NOT NULL,
+            CONSTRAINT UN_TT_COMP UNIQUE (ID, NAME) <-- 테이블레벨 복합키
+       );
+    3. PRIMARY KEY (식별자, 기본값, 유일한 값)
+     -> NOT NULL + UNIQUE 두 가지의 제약조건을 합친 제약조건
+     -> 그러므로 같은 값을 두번 기록 못하며 NULL 값을 사용못한다 !!
+     -> 기본키라고 하며 데이터 정규화 과정에서는 IDENTIFIER (식별자) 라고 한다.
+     -> 즉 테이블에서 원하는 항목을 조회 하고 싶을 때 이용하는 컬럼을 의미한다.
+     -> 테이블 당 오직 1개의 컬럼에 설정할 수 있다. 오직 1개 !!
+     -> 컬럼레벨 테이블 레벨 두 레벨에서 설정이 가능하다.
+     -> 복합키를 사용하여 조건을 설정할 경우 하나라도 NULL을 기록하면 ERROR 난다.(BUT UNIQUE는 가능)
+     
+     예)  CREATE TABLE TEST(
+            ID CHAR(3) [ CONSTRAINT 이름 ]PRIMARY KEY, <-- 컬럼레벨
+            PWD NUMBER, 
+            NAME VARCHAR(15) CONSTRAINT NN_TT_NAME NOT NULL      
+       );
+       
+        CREATE TABLE TEST(
+            ID CHAR(3) ,
+            PWD NUMBER, 
+            NAME VARCHAR(15) CONSTRAINT NN_TT_NAME NOT NULL,
+            [ CONSTRAINT PK_TT_ID ] PRIMARY KEY (ID) <-- 테이블 레벨
+       );
+       
+       <PRIMARY KEY 제약조건도 복합키로 설정>
+          CREATE TABLE TESTPK3(
+              PID NUMBER,
+              PNAME VARCHAR2(30),
+              PDATE DATE,
+              CONSTRAINT PK_TPK3_COMP PRIMARY KEY (PID, PNAME)
+          );
+          
+     4. CHECK 제약조건 (조건 처리하는 제약조건 (WHERE) ) 
+      -> 테이블 생성 시 컬럼에 기록되는 값에 조건을 설정할 때 사용
+      -> CHECK 조건에 만족하는 값만 기록 할 수 있다
+      -> 컬럼레벨 , 테이블 레벨 둘다 설정 가능
+      -> 사용형식 : [ CONSTRAINT 이름 ] CHECK ( 컬럼명 연산자 제한 값 ) 
+      ※제한 값은 반드시 리터럴(값)만 가능 !! 함수 사용 불가능 또한 사용 될때마다 바뀌는 값은 불가능
+      
+      <컬럼 레벨 CHECK 조건 예>
+      CREATE TABLE TESTCHK(
+          C_NAME VARCHAR2(15) CONSTRAINT NN_TCK_NAME NOT NULL,
+          C_PRICE NUMBER(5) CONSTRAINT CK_TCK_PRICE CHECK (C_PRICE BETWEEN 1 AND 99999),
+          C_LEVEL CHAR(1) CONSTRAINT CK_TCK_LEVEL CHECK (C_LEVEL IN ('A', 'B', 'C') ) 
+          --> C_LEVEL 값이 기록 될때 만약 소문자 a를 기록 할때 에러가 난다 
+          --> 그 이유는 테이블명, 키워드, 명령어는 대/소문자 구별을 안하지만 
+          --> 값은 대/소문자 구별을 명확히 해야된다.
+      );
+      
+      --제한 값 지정, AND, OR사용
+        CREATE TABLE TESTCHK2(
+            CNAME VARCHAR2(15 CHAR) CONSTRAINT PK_TCK_CNAME PRIMARY KEY,
+            -- 기본이 바이트 크기이지만 CHAR를 적어주므로 글자 수로 크기를 지정할 수 있다.
+            C_PRICE NUMBER(5) CHECK (C_PRICE >= 1 AND C_PRICE <= 99999),
+            C_LEVEL CHAR(1) CHECK (C_LEVEL LIKE 'A' OR C_LEVEL LIKE 'B' OR C_LEVEL LIKE 'C'),
+            --C_DATE DATE CHECK (C_DATE < SYSDATE) --제한값 SYSDATE()는 실행될때마다 바뀌기 때문에 사용 못함
+                                                --제한 값 자리에는 무조건 값을 정해줘야한다.
+            C_DATE DATE CHECK (C_DATE > TO_DATE('90/01/01', 'YYYY/MM/DD'))
+            --TO_DATE()에서 날짜 포맷을 오라클 형식 처럼 90/01/01처럼 되어있으면 2글자에서 4글자로 변환 가능하다.
+        );
+      
+   5. FOREIGN KEY (외부키, 외래키, 참조키
+    -> FOREIGN KEY 제약조건에 의해서 테이블 간 관계(RelationShip)가 만들어진다 (형성)
+    -> 제공하는 테이블(부모key, 참조)이 제공하는 값만 기록에 사용할 수 있는 컬럼
+    -> 컬럼 레벨, 테이블 레벨 둘다 설정 가능하지만 키워드가 달라진다.
+    -> 컬럼레벨 : 컬럼명 자료형(크기) [CONSTRAINT 이름] REFERENCES 참조하는 테이블이름 [(참조할 컬럼명,부모키)]
+       ★ [(참조할 컬럼명,부모키)] 생략하면 참조 테이블(부모)에 PRIMARY KEY로 설정된 컬럼을 자동으로 참조한다.
+    -> 테이블 레벨 : [CONSTRAINT 이름] FOREIGN KEY (적용 할 컬럼명) REFERENCES 참조하는 테이블 [참조할 컬럼명]
+       ★ [(참조할 컬럼명,부모키)] 역시 생략하면 참조테이블(값 제공테이블)에 기본키(PRIMARY KEY)로 설정된 것을 사용한다.
+       ※ REFERENCES 할 컬럼은 반드시 PRIMARY KEY 또는 UNIQUE 제약조건이 설정되어 있어야 한다.!!!!
+    -> FOREIGN KEY 설정 시 제약사항 : 제공하는 테이블에서 제공되는 값만 사용(기록)가능하다.
+                                     다시 말해 제공하지 않는 값을 기록하려면 ERROR 나며 NULL은 사용가능하다.
+                                     PRIMARY KEY는 오직 1개만 설정가능하지만 FOREIGN KEY는 몇 개 설정해도 상관없다.
+                                     
+       예) CREATE TABLE TESTFK(
+              EMP_ID CHAR(3) REFERENCES EMPLOYEE, --[ (EMP_ID) ] 자동으로 PRIMARY KEY로 설정된 컬럼이 적용
+              DEPT_ID CHAR(2) CONSTRAINT FK_TFK_DID REFERENCES DEPARTMENT (DEPT_ID),
+              JOB_ID CHAR(2),
+              CONSTRAINT FK_TFK_JID FOREIGN KEY (JOB_ID) REFERENCES JOB (JOB_ID)
+          );
+          
+     ※ 기본적으로 FOREIGN KEY로 제약 조건이 설정이 되면, 값을 제공하는 참조테이블의 컬럼값은 함부로 삭제 못한다!!
+        또한 참조컬럼(부모키)값을 자식레코드가 사용하고 있으면 삭제를 못한다.
+        즉 EMPLOYEE테이블에 DEPT_ID에 기록된 '90' 부서코드가 있으면 DEPARTMENT에 DEPT_ID의 '90'부서는 삭제를 못한다.
+        
+ ※ DML : DELETE 문 (행 삭제 구문) ※
+    -> DELETE는 한 개의 값을 삭제하는 것이 아니라 한 행을 즉 한 줄을 삭제하는 명령어이다.
+    -> 한 개의 값을 삭제하고 싶으면 UPDATE로 NULL로 처리한다.
+    -> 사용방식 : DELETE FROM 테이블 명 WHERE 컬럼명 비교연산자 삭제할 조건 값 
+    -> 조건에 해당되는 값이 있는 행을 삭제하라는 의미
+    
+ * 필요시 FOREIGN KEY 제약조건 설정 시 미리 삭제 옵션(삭제 형식) 을 추가 할 수 있다.
+   부모키를 삭제할 수 있게 됨
+   삭제 옵션 ->  ON DELETE SET NULL : 부모키가 삭제되면 자식레코드(사용컬럼)의 값을 NULL로 바꾼다.
+            -> ON DELETE CASCADE ; 부모키가 삭제되면 자식레코드가 있는 행을 같이 삭제한다.
+            -> ON RESTRICTED : 기본값 삭제 불가능!!
