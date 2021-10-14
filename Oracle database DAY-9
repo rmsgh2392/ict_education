@@ -1,0 +1,177 @@
+=========================복습=====================================
+1. 서브쿼리를 이용한 테이블 생성
+2. 데이터 딕셔너리
+3. 테이블 수정 (DDL)
+=================================================================
+
+1. 서브쿼리를 이용한 테이블 생성 
+-> 기본적으로 테이블을 생성 시 구문은 CREATE TABLE 테이블명 ( 컬럼 / 제약조건....); 이다.
+-> 서브쿼리를 이용해 테이블을 생성 시 기존에 있는 테이블을 복사하는 용도로 쓰인다.
+-> 구문 형식은 : CREATE TABLE 테이블명 [ (컬럼명 [DEFAULT 값] ..컬럼명 ...) ] -> 컬럼명도 생략가능하다.
+                AS ( 서브쿼리 ) -> 괄호는 생략가능 
+              -> 컬럼명을 생략하면 서브쿼리에 사용 하는 컬럼 이름이 적용
+              -> 또한 테이블 생성 시 서브쿼리에 컬럼명, 자료형, 제약조건 중 NOT NULL 만 복사된다. (나머지 제약조건은 복사되지 않는다)
+              -> 기본적으로 서브쿼리로 테이블 생성시 SELECT 절에 컬럼 항목들이 그대로 새로 만들어진 테이블의 컬럼이 된다.
+              -> 만약 새로 만들어진 테이블의 컬럼명을 바꾸고 싶으면 모든 컬럼명을 한번에 바꿔야 되며 일부만 바꾸려고 하면 ERROR가 난다.
+              -> BUT 굳이 일부만 바꾸고자 한다면, 서브쿼리의 SELECT절 컬럼의 별칭을 사용해 일부 컬럼명만 변경해준다.
+              
+     예) 전 직원의 사번, 이름, 급여, 부서명, 직급명 을 조회해서 TABLE_SUBQUERY1 테이블에 저장 처리하는 구문을 작성 실행
+      => CREATE TABLE TABLE_SUBQUERY1
+         AS 
+        ( SELECT EMP_ID, EMP_NAME, SALARY, DEPT_NAME, JOB_TITLE -> 나열된 컬럼들이 그대로 TABLE_SUBQUERY1 테이블 컬럼에 들어간다.
+         FROM EMPLOYEE LEFT JOIN <- 전 직원 조회이므로 OUTER JOIN을 이용 (NULL값까지)
+              DEPARTMENT USING(DEPT_ID)
+              LEFT JOIN JOB USING(JOB_ID) ) -> 서브쿼리 구별을 위해 괄호 사용 BUT 괄호 생략 가능
+         -> 서브쿼리로 부터 조회된 결과 복사본으로 TABLE_SEQUERY1이라는 새로운 테이블 생성, 서브쿼리의 컬럼, 데이터 기록값을 그대로 사용!!
+     
+     ※ 만약 테이블을 생성 시 사용자가 만든 테이블의 구조도(스키마)를 보고 싶을 때 사용하는 명령어가 있다
+        * DESCRIBE 명령어 (축약형 :DESC) 
+        -> 사용 형식: DESCRIBE 또는 DESC 테이블명;
+        -> 테이블의 구성정보를 확인할 수 있다, 자료형, 컬럼명, 제약조건 등등...
+        -> 예) DESC TABLE_SUBQUERY1;
+     
+     ※ 위에서 말했듯이 서브쿼리로 새 테이블을 만들 때 컬럼명을 바꿀 수 있다.
+        * 주의사항 : 서브쿼리의 SELECT 절에 나열된 컬럼 항목의 갯수와 바꿀 컬럼명의 갯수가 일치해야한다 !!
+        -> CREATE TABLE ( "바꿀 컬럼명 ......")
+           AS 서브쿼리 
+        -> 예) CREATE TABLE (사번, 사원이름, 급여, 부서명, 직급명) <= 이렇게 별칭을 사용해서 컬럼명을 변경할수 있다 
+               AS                                                  하지만 컬럼의 갯수는 일치시켜줘야한다 !!
+               SELECT EMP_ID, EMP_NAME, SALARY, DEPT_NAME, JOB_TITLE
+               FROM EMPLOYEE LEFT JOIN 
+               JOB USING (JOB_ID)
+               LEFT JOIN DEPARTMENT 
+               USING (DEPT_ID) 
+               
+               CREATE TABLE PART_LIST2 --(DNAME, JTITLE, ENAME ) -- SELECT 절 항목과 갯수가 일치하지 않음
+               AS
+               SELECT DEPT_NAME *DNAME, JOB_TITLE *JTITLE, EMP_NAME *ENAME, EMP_ID <= 일부 컬럼만 바꾸고 싶을 때 컬럼명 옆에 *별칭을 사용해 
+               FROM EMPLOYEE LEFT JOIN                                              일부만 바꿔준다 
+                      DEPARTMENT USING(DEPT_ID)
+               LEFT JOIN JOB USING(JOB_ID)
+               ORDER BY 1, 2;
+      ※ 서브쿼리를 이용하여 테이블 생성 시 데이터는 저장하지 않고 테이블의 구조만 복사하고자 한다면
+         서브쿼리의 WHERE 절에 1 = 0 이라고 기술해 생성하면 데이터는 복사하지 않고 그 테이블의 구조만 복사한다.
+        
+      ※ 서브쿼리를 이용해 테이블을 만들 때 제약조건을 새로 변경하고 싶을 때 컬럼명을 바꾸면서 제약조건도 추가할 수 있다.
+         주의사항 : (1) FOREIGN KEY의 제약조건은 추가할 수 없다.
+                   (2) 서브쿼리의 각 컬럼별에 기록 된 값과 확인하면서 제약조건을 추가해야한다.
+                       즉 기록되어 있는 컬럼의 값을 보고 맞추어 제약조건을 추가해야한다.
+                       만약 EMPLOYEE에 SALARY 컬럼에 기록된 값들이(150만원 ~ 900만원 사이)인데 새로운 테이블을 만들어 제약조건을 
+                       추가 할때 SALARY > 200만원 이라고 제약조건을 설정을 하면 ERROR 가 난다.
+                       반드시 서브쿼리의 컬럼들에 기록되어 있는 값을 잘 보며 제약조건을 추가해야한다.!!!
+             예) CREATE TABLE TABLE_SUBQUERY3 (
+                    EID PRIMARY KEY <- 원래 기본키로 설정되어 있기 때문에 상관없다.
+                    ENAME ,
+                    SAL CHECK (SAL > 2000000), --ERROR 서브쿼리 결과값과 맞지 않음(2백만보다 적게 받는 급여가 존재)
+                    DNAME,
+                    JTITLE NOT NULL -ERROR JTITLE 컬럼에 이미 NULL값이 존재
+             
+             );
+                AS
+                SELECT EMP_ID, EMP_NAME, SALARY, DEPT_NAME, JOB_TITLE
+                FROM EMPLOYEE LEFT JOIN
+                      DEPARTMENT USING(DEPT_ID)
+                LEFT JOIN JOB USING(JOB_ID)                
+                WHERE SALARY > 2000000  -- > CHECK (SAL > 2000000) 해결조치 처음부터 서브쿼리로 급여를 200만원이상 받는 직원들만 가져온다
+                AND JOB_TITLE IS NOT NULL;  --  > JTITLE NOT NULL 해결조치 빈칸이 없는 직원들만 가져온다.
+        
+        ＃ NATURAL (EQUAL) JOIN #
+          -> 연결할 컬럼명을 별도로 지정하지 않는다.
+          -> 조인 할 테이블에 기본키, 즉 PRIMARY KEY를 이용한 EQUAL + INNER JOIN이다.
+          예) SELECT * 
+              FROM EMPLOYEE NATURAL JOIN  --> DEPARTMANT 의 PK인 DEPT_ID를 이용해 조인
+              DEPARTMENT ;
+              
+  ==========================================================================================================
+  * DML (Data Manipulation Language : 데이터 조작어)
+    -> INSERT 문, UPDATE 문, DELETE 문 이 있다.
+    -> 테이블에 데이터를 기록하거나 저장 / 기록된 데이터를 수정 / 기록된 데이터에 행을 삭제하는 역활을 한다.
+    -> INSERT 문 : 테이블에 행을 추가 (값 기록 저장용도)
+    -> UPDATE 문  : 값을 수정 (행 갯수에는 지장 없음)
+    -> DELETE 문 :  조건에 맞는 한 행을 삭제 (행 갯수가 줄어듬 ) BUT 복구가 된다 (ROLLBACK;)
+    -> TRUNCATE 문 : 테이블 전체 행을 삭제 BUT 복구가 안된다 !!
+    
+    ** UPDATE 문 ** 
+    사용형식 :  UPDATE 테이블명
+               SET 값 수정할 컬럼명 = 수정할 값 (DEFAULT 값 사용가능) ....
+               WHERE 컬럼명 연산자 추출 값
+               ※ 주의 사항 : WHERE 절을 생략 할 수 있지만 만약 생락 하면 테이블 전체 컬럼 값을 수정한다!!!
+                  참고 : SET 절에 수정할 값 자리에 서브쿼리가 사용 가능하며 WHERE 절 추출 값에도 서브쿼리를 사용할 수 있다.
+     예) 심하균 직원의 직급코드와 급여를 수정 바꿀 값 성해교 직원의 같은 직급 같은 급여로 수정
+        1. SELECT JOB_ID, SALARY
+           FROM EMPLOYEE
+           WHERE EMP_NAME LIKE '성해교'; --> 성해교의 직급코드 급여 조회
+           
+           UPDATE EMPLOYEE ==> 단일 행 서브쿼리 
+           SET JOB_ID = (SELECT JOB_ID FROM EMPLOYEE WHERE EMP_NAME LIKE '성해교') , 
+               SALARY = (SELECT SALARY FORM EMPLOYEE WHERE EMP_NAME LIKE '성해교')
+           WHERE EMP_NAME '심하균';
+           OR
+           UPDATE EMPLOYEE ===> 다중 열 서브쿼리 
+           SET (JOB_ID, SALARY) = (SELECT JOB_ID, SALARY 
+                                   FROM EMPLOYEE
+                                   WHERE EMP_NAME LIKE '성해교')
+           WHERE EMP_NAME LIKE '심하균';
+           
+           * UPDATE 문 WHERE 절 서브쿼리 사용 예
+           UPDATE EMPLOYEE
+           SET BONUS_PCT = 0.3
+           WHERE DEPT_ID = (SELECT DEPT_ID)
+                            FROM DEPARTMENT
+                            WHERE DEPT_NAME LIKE '해외영업2팀')
+        
+          * INSERT 문에서도 서브쿼리를 사용할 수 있다 
+          -> CREATE TABLE EMP (
+                EMP_ID CHAR(3),
+                EMP_NAME VARCHAR2(20),
+                DEPT_NAME VARCHAR2(20)
+            );
+            INSERT INTO EMP  ---> 원래 VALUES를 이용해 값을 기록하지만 서브쿼리 사용시 VALUES를 안쓰고 서브쿼리를 사용한다.
+            (SELECT EMP_ID, EMP_NAME, DEPT_NAME -->그리고 새로운 테이블의 컬럼 갯수와 서브쿼리의 컬럼 항목 갯수와 일치해야한다.
+             FROM EMPLOYEE LEFT JOIN
+             DEPARTMENT USING(DEPT_ID);
+             
+     ** DELETE 구문 ** 
+     -> 테이블의 행을 삭제하는 구문, 복구가 가능하다.
+     -> 사용형식 : DELETE FROM 테이블명
+                  WHERE 삭제를 위한 조건 --> 만약 WHERE 절이 생략되면 모든 행이 삭제된다.
+     -> TRUNCATE 문 : 테이블의 모든 행을 삭제 복구 불가능 
+     
+     ※ 테이블 : CREATE TABLE, DROP TABLE, ALTER TABLE
+        뷰 : CREATE VIEW, DROP VIEW
+        시퀀스 : CREATE SEQUENCE, DROP SEQUENCE, ALTER SEQUENCE
+        인덱스 : CREATE INDEX, DROP INDEX
+        
+     ** 테이블 수정 ** 
+     -> 컬럼 수정 : [ 컬럼을 추가 / 삭제 ], [ 컬럼의 자료형 / 자료형 크기 변경 ], [ 컬럼명 이름 변경, 컬럼에 DEFAULT 값 변경 가능 ]
+     -> 제약조건 수정 : 컬럼의 제약조건을 추가 / 삭제 , 제약조건의 이름도 변경할 수 있다.
+     -> 테이블 수정 : 테이블의 이름을 변경할 수 있다.
+     -> 구문형식 :   ALTER TABLE 테이블명
+        컬럼 추가 => ADD ( 컬럼명 자료형 [DEFAULT값] )
+        제약조건 추가 => ADD ([제약조건 이름] 제약조건 종류 (적용할 컬럼명) )
+                     => BUT 제약조건 중 NOT NULL은 ADD로 추가하는 것이 아니라 상태를 변경하는 의미이므로 
+                     => MODIFY 로 상태를 변경해준다 예) MODIFY (ENAME NULL, EID NULL)
+        DEFAULT / 자료형 값 변경 => MODIFY (컬럼명 자료형 [DEFAULT 값] )
+        테이블 이름 변경 => (1) ALTER TABLE 기존테이블명 RENAME TO 바꿀테이블명;
+                           (2) RENAME 기존테이블명 TO 바꿀테이블명;
+        컬럼명 변경 => ALTER TABLE 테이블 명 RENAME COLUMN 기존컬럼명 TO 바꿀 컬럼명;
+        
+        제약조건이름 변경 => ALTER TABLE 테이블명 RENAME CONSTRAINT 기존제약조건이름 TO 바꿀제약조건이름
+        
+        컬럼 제거 시 => DROP COLUMN 컬럼명 또는 DROP (컬럼명) / 만약 여러개 지우고 싶을 때 DROP (컬럼명, 컬럼명, 컬럼명 ....)
+        제약조건 제거시 => DROP CONSTRAINT 제약조건 이름 / DROP PRIMARY KEY (적용한 컬럼명) / DROP UNIQUE (적용한 컬럼명)
+        ※제약조건 제거시 주의사항 : 기본적으로 제약조건이 설정되어 있는 컬럼은 삭제를 못한다 
+          BUT 제약조건도 함께 삭제하고 싶으면 DROP (컬럼명) CASCADE CONSTRAINTS 명령어를 써서 삭제한다!!
+          BUT 다른 테이블에서 FOREIGN KEY 제약조건으로 참고하고 있는 컬럼(부모키)는 삭제할 수 없다
+        
+        ※컬럼에 자료형을 바꿀 시 주의 사항
+          -> 만약 값이 비어 있는 컬럼은 아무 자료형으로 변경 가능하다.
+          -> 하지만 값이 기록 되어있는 컬럼에 경우에는 문자형만 문자형끼리 변경 가능하다 CHAR<=>VARCHAR2
+          -> 자료형의 크기는 같거나 크게는 변경이 가능하나 크기를 줄이는 것은 ERROR 불가능하다.
+         * DEFAULT 값도 변경이 가능하다 
+          => 하지만 이미 DEFAULT 값으로 설정되어 있는 컬럼의 값이 DEFAULT값으로 기록되어 있는 데이터인 경우 영향을 주지 않고 
+          => DEFAULT 값 변경 후 그 이후에 기록 되는 값들은 바뀐 DEFAULT 값으로 적용되어 기록된다.
+          
+   ** 테이블 삭제 **
+   -> DROP TABLE 테이블 명 [필요하다면 제약조건들도 함꼐 지우고 싶으면 CASCADE CONSTRAINTS]
+   -> 참조되는 테이블 즉, 부모키가 있는 테이블은 제거못한다.
